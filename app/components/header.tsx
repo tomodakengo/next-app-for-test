@@ -41,7 +41,10 @@ const Header = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link className="btn" href="">
+          <Link
+            className="btn"
+            href="https://github.com/tomodakengo/next-app-for-test"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="icon icon-tabler icon-tabler-brand-github"
