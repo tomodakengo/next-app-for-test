@@ -1,5 +1,7 @@
-import Image from "next/image";
+"use client";
+
+import Tasks from "./tasks/page";
 
 export default function Home() {
-  return <div>hello</div>;
+  return <Tasks />;
 }
