@@ -1,7 +1,7 @@
-"use client";
-
-import Tasks from "./tasks/page";
-
 export default function Home() {
-  return <Tasks />;
+  return (
+    <div>
+      <h1>Welcome</h1>
+    </div>
+  );
 }
