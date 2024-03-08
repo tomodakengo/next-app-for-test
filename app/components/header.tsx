@@ -29,19 +29,30 @@ const Header = () => {
               <li>
                 <Link href="/tasks">Tasks</Link>
               </li>
+              <li>
+                <Link href="/chat">Chat</Link>
+              </li>
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">daisyUI</a>
+          <Link className="btn btn-ghost text-xl" href="/">
+            Tests//
+          </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
             <li>
               <Link href="/tasks">Tasks</Link>
             </li>
+            <li>
+              <Link href="/chat">Chat</Link>
+            </li>
           </ul>
         </div>
         <div className="navbar-end">
-          <Link className="btn" href="">
+          <Link
+            className="btn"
+            href="https://github.com/tomodakengo/next-app-for-test"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="icon icon-tabler icon-tabler-brand-github"
