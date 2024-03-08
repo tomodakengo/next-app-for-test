@@ -12,12 +12,12 @@ function Chat() {
       const savedMessages = localStorage.getItem("messages");
       if (savedMessages) {
         return JSON.parse(savedMessages);
-      } else {
-        return [
-          { text: "Hello!", sender: "user" },
-          { text: "Hi there!", sender: "other" },
-        ];
       }
+    } else {
+      return [
+        { text: "Hello!", sender: "user" },
+        { text: "Hi there!", sender: "other" },
+      ];
     }
   });
   const [newMessage, setNewMessage] = useState("");

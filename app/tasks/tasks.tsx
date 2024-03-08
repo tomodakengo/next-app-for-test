@@ -11,12 +11,12 @@ export default function Tasks() {
       const savedTasks = localStorage.getItem("tasks");
       if (savedTasks) {
         return JSON.parse(savedTasks);
-      } else {
-        return [
-          { text: "Run the tests", done: true },
-          { text: "Deploy the app", done: false },
-        ];
       }
+    } else {
+      return [
+        { text: "Run the tests", done: true },
+        { text: "Deploy the app", done: false },
+      ];
     }
   });
   const [newTask, setNewTask] = useState("");
