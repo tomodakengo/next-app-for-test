@@ -8,7 +8,7 @@ interface Message {
 
 function Chat() {
   const [messages, setMessages] = useState<Message[]>(() => {
-    const savedMessages = window.localStorage.getItem("messages");
+    const savedMessages = localStorage.getItem("messages");
     if (savedMessages) {
       return JSON.parse(savedMessages);
     } else {
@@ -21,7 +21,7 @@ function Chat() {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    window.localStorage.setItem("messages", JSON.stringify(messages));
+    localStorage.setItem("messages", JSON.stringify(messages));
   }, [messages]); // Run whenever tasks change
 
   const handleInputChange = (e: {

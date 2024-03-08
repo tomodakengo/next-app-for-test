@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>(() => {
-    const savedTasks = window.localStorage.getItem("tasks");
+    const savedTasks = localStorage.getItem("tasks");
     if (savedTasks) {
       return JSON.parse(savedTasks);
     } else {
@@ -15,7 +15,7 @@ export default function Tasks() {
   const [newTask, setNewTask] = useState("");
 
   useEffect(() => {
-    window.localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]); // Run whenever tasks change
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
