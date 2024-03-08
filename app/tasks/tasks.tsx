@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 
 export default function Tasks() {
   /* Use local storage. Save all tasks and their done status. */
-  const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>([]);
+  const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>([
+    { text: "Run the tests", done: true },
+    { text: "Deploy the app", done: false },
+  ]);
   const [newTask, setNewTask] = useState("");
 
   useEffect(() => {
@@ -52,56 +55,82 @@ export default function Tasks() {
     setTasks(newTasks);
   };
 
+  /* Done count */
+  const doneCount = tasks.filter((task) => task.done).length;
+  /* Total tasks */
+  const totalTasks = tasks.length;
+  /* Remaining tasks */
+  const remainingTasks = totalTasks - doneCount;
+
   return (
-    <div>
-      <h1 className="text-2xl">Tasks</h1>
-      <div className="flex items-center flex-col">
-        <div className="flex">
-          <input
-            type="text"
-            placeholder="Run the tests"
-            className="input input-bordered w-full max-w-xs"
-            value={newTask}
-            onChange={handleInputChange}
-          />
-          <button className="btn btn-primary" onClick={addTask}>
-            Add
-          </button>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      <div className="md:w-1/4">
+        <div>
+          <div className="stat">
+            <div className="stat-value">
+              {((doneCount / totalTasks) * 100).toFixed(0)}%
+            </div>
+            <div className="stat-title">Tasks done</div>
+            <div className="stat-desc text-secondary">
+              {remainingTasks} tasks remaining
+            </div>
+          </div>
         </div>
       </div>
-      <ul className="list-none p-0 m-0">
-        {tasks.map((task, index) => (
-          <li key={index} className="flex justify-between items-center">
-            <div>
-              <span>{task.done ? "✅" : ""}</span>
-              <span
-                style={{ textDecoration: task.done ? "line-through" : "none" }}
-              >
-                {task.text}
-              </span>
-            </div>
+      <div className="md:w-3/4">
+        <div className="flex items-center flex-col">
+          <div className="flex join">
+            <input
+              type="text"
+              placeholder="Run the tests"
+              className="input input-bordered w-full max-w-xs join-item"
+              value={newTask}
+              onChange={handleInputChange}
+            />
+            <button className="btn btn-primary join-item" onClick={addTask}>
+              Add
+            </button>
+          </div>
+        </div>
+        <ul className="list-none p-0 m-0">
+          {tasks.map((task, index) => (
+            <li key={index} className="flex justify-between items-center p-1">
+              <div>
+                <span>{task.done ? "✅" : ""}</span>
+                <span
+                  style={{
+                    textDecoration: task.done ? "line-through" : "none",
+                  }}
+                >
+                  {task.text}
+                </span>
+              </div>
 
-            <div>
-              <button
-                className="btn btn-sm btn-outline"
-                onClick={() => markDone(index)}
-                disabled={task.done}
-              >
-                Done
-              </button>
-              <button className="btn btn-sm" onClick={() => editTask(index)}>
-                Edit
-              </button>
-              <button
-                className="btn btn-sm btn-outline"
-                onClick={() => removeTask(index)}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div>
+                <button
+                  className="btn btn-sm btn-outline mr-1"
+                  onClick={() => markDone(index)}
+                  disabled={task.done}
+                >
+                  Done
+                </button>
+                <button
+                  className="btn btn-sm mr-1"
+                  onClick={() => editTask(index)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-sm btn-ghost"
+                  onClick={() => removeTask(index)}
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

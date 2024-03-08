@@ -29,6 +29,9 @@ const Header = () => {
               <li>
                 <Link href="/tasks">Tasks</Link>
               </li>
+              <li>
+                <Link href="/chat">Chat</Link>
+              </li>
             </ul>
           </div>
           <Link className="btn btn-ghost text-xl" href="/">
@@ -39,6 +42,9 @@ const Header = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <Link href="/tasks">Tasks</Link>
+            </li>
+            <li>
+              <Link href="/chat">Chat</Link>
             </li>
           </ul>
         </div>
