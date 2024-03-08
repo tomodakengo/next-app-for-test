@@ -8,14 +8,16 @@ interface Message {
 
 function Chat() {
   const [messages, setMessages] = useState<Message[]>(() => {
-    const savedMessages = localStorage.getItem("messages");
-    if (savedMessages) {
-      return JSON.parse(savedMessages);
-    } else {
-      return [
-        { text: "Hello!", sender: "user" },
-        { text: "Hi there!", sender: "other" },
-      ];
+    if (typeof window !== "undefined") {
+      const savedMessages = localStorage.getItem("messages");
+      if (savedMessages) {
+        return JSON.parse(savedMessages);
+      } else {
+        return [
+          { text: "Hello!", sender: "user" },
+          { text: "Hi there!", sender: "other" },
+        ];
+      }
     }
   });
   const [newMessage, setNewMessage] = useState("");

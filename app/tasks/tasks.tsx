@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 
+interface Task {
+  text: string;
+  done: boolean;
+}
+
 export default function Tasks() {
-  const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>(() => {
-    const savedTasks = localStorage.getItem("tasks");
-    if (savedTasks) {
-      return JSON.parse(savedTasks);
-    } else {
-      return [
-        { text: "Run the tests", done: true },
-        { text: "Deploy the app", done: false },
-      ];
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    if (typeof window !== "undefined") {
+      const savedTasks = localStorage.getItem("tasks");
+      if (savedTasks) {
+        return JSON.parse(savedTasks);
+      } else {
+        return [
+          { text: "Run the tests", done: true },
+          { text: "Deploy the app", done: false },
+        ];
+      }
     }
   });
   const [newTask, setNewTask] = useState("");
