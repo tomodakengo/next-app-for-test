@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# What is this?
 
-## Getting Started
+This is a sample site for testing a single page application.
 
-First, run the development server:
+# Technology Stacks
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Framework
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## CSS Components
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Tailwind
+  - daisyUI
 
-## Learn More
+# Application Specifications
 
-To learn more about Next.js, take a look at the following resources:
+## data-testid
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Locators that are expected to be used in the test are assigned a data-testid.<br>
+The dynamic Locator is assigned a specific prefix followed by an array index.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Storage
 
-## Deploy on Vercel
+All states are stored in local storage.<br>
+Local storage must be deleted to return to the initial state.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If local storage does not exist, the default value is set.<br>
+There may be a delay of about 1 second before the initial value is reflected.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Applications
+
+### Home
+
+Not implemented
+
+### Tasks
+
+Local storage key is `tasks`.
+
+You can add, edit, and delete tasks. In addition, you can see the progress of the task.
+
+A task has two states: `Done(true)` and `Remaining(false)`.<br>
+`Done` means the task is completed.<br>
+`Remaining` means the task is NOT completed.
+
+New tasks are added to the bottom of the list.
+
+When the Done button is pressed, ✅ appears to the left of the task and a strikeout line appears above the text. If the task is Done, the Done button cannot be pressed.
+
+Pressing the Edit button brings up a prompt dialog to edit the contents. Task returns to `Remaining`.
+
+### Chat
+
+Local storage key is `messages`.
+
+You can send a message and get a reply.
+
+Messages sent are displayed on the right side and replies are displayed on the left side.<br>
+Whenever you send a message, you will get a reply.
+
+The content of the reply is obtained from the following API.<br>
+https://api.adviceslip.com/advice
+
+### Other
+
+Wait a little longer ♥️
