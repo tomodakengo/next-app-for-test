@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
 
 export default function Tasks() {
-  /* Use local storage. Save all tasks and their done status. */
-  const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>([
-    { text: "Run the tests", done: true },
-    { text: "Deploy the app", done: false },
-  ]);
+  const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>(() => {
+    const savedTasks = window.localStorage.getItem("tasks");
+    if (savedTasks) {
+      return JSON.parse(savedTasks);
+    } else {
+      return [
+        { text: "Run the tests", done: true },
+        { text: "Deploy the app", done: false },
+      ];
+    }
+  });
   const [newTask, setNewTask] = useState("");
 
   useEffect(() => {
-    const savedTasks = localStorage.getItem("tasks");
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    window.localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]); // Run whenever tasks change
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTask(e.target.value);
@@ -44,6 +43,7 @@ export default function Tasks() {
     const updatedText = prompt("Edit task", newTasks[index].text);
     if (updatedText !== null) {
       newTasks[index].text = updatedText;
+      newTasks[index].done = false;
       setTasks(newTasks);
     }
   };
@@ -67,11 +67,14 @@ export default function Tasks() {
       <div className="md:w-1/4">
         <div>
           <div className="stat">
-            <div className="stat-value">
+            <div className="stat-value" data-testid="label-percentage-of-done">
               {((doneCount / totalTasks) * 100).toFixed(0)}%
             </div>
             <div className="stat-title">Tasks done</div>
-            <div className="stat-desc text-secondary">
+            <div
+              className="stat-desc text-secondary"
+              data-testid="label-tasks-remaining"
+            >
               {remainingTasks} tasks remaining
             </div>
           </div>
@@ -86,21 +89,33 @@ export default function Tasks() {
               className="input input-bordered w-full max-w-xs join-item"
               value={newTask}
               onChange={handleInputChange}
+              data-testid="input-new-task"
             />
-            <button className="btn btn-primary join-item" onClick={addTask}>
+            <button
+              className="btn btn-primary join-item"
+              onClick={addTask}
+              data-testid="button-add-new-task"
+            >
               Add
             </button>
           </div>
         </div>
         <ul className="list-none p-0 m-0">
           {tasks.map((task, index) => (
-            <li key={index} className="flex justify-between items-center p-1">
+            <li
+              key={index}
+              className="flex justify-between items-center p-1"
+              data-testid={`list-task-${index}`}
+            >
               <div>
-                <span>{task.done ? "✅" : ""}</span>
+                <span data-testid={`icon-done-of-task-${index}`}>
+                  {task.done ? "✅" : ""}
+                </span>
                 <span
                   style={{
                     textDecoration: task.done ? "line-through" : "none",
                   }}
+                  data-testid={`label-task-${index}`}
                 >
                   {task.text}
                 </span>
@@ -111,18 +126,21 @@ export default function Tasks() {
                   className="btn btn-sm btn-outline mr-1"
                   onClick={() => markDone(index)}
                   disabled={task.done}
+                  data-testid="button-done-of-task"
                 >
                   Done
                 </button>
                 <button
                   className="btn btn-sm mr-1"
                   onClick={() => editTask(index)}
+                  data-testid="button-edit-of-task"
                 >
                   Edit
                 </button>
                 <button
                   className="btn btn-sm btn-ghost"
                   onClick={() => removeTask(index)}
+                  data-testid="button-delete-of-task"
                 >
                   Delete
                 </button>

@@ -1,12 +1,28 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useEffect } from "react";
 import axios from "axios";
 
+interface Message {
+  text: string;
+  sender: "user" | "other";
+}
+
 function Chat() {
-  const [messages, setMessages] = useState([
-    { text: "Hello!", sender: "user" },
-    { text: "Hi there!", sender: "other" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const savedMessages = window.localStorage.getItem("messages");
+    if (savedMessages) {
+      return JSON.parse(savedMessages);
+    } else {
+      return [
+        { text: "Hello!", sender: "user" },
+        { text: "Hi there!", sender: "other" },
+      ];
+    }
+  });
   const [newMessage, setNewMessage] = useState("");
+
+  useEffect(() => {
+    window.localStorage.setItem("messages", JSON.stringify(messages));
+  }, [messages]); // Run whenever tasks change
 
   const handleInputChange = (e: {
     target: { value: SetStateAction<string> };
@@ -52,7 +68,12 @@ function Chat() {
                 message.sender === "user" ? "chat-end" : "chat-start"
               }`}
             >
-              <div className="chat-bubble">{message.text}</div>
+              <div
+                className="chat-bubble"
+                data-testid={`label-message-${index}`}
+              >
+                {message.text}
+              </div>
             </div>
           ))}
         </div>
@@ -65,8 +86,13 @@ function Chat() {
             className="input input-bordered w-full join-item"
             value={newMessage}
             onChange={handleInputChange}
+            data-testid="input-new-message"
           />
-          <button onClick={sendMessage} className="btn btn-primary join-item">
+          <button
+            onClick={sendMessage}
+            className="btn btn-primary join-item"
+            data-testid="button-send-message"
+          >
             Send
           </button>
         </div>
