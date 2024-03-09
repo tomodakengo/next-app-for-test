@@ -9,7 +9,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     if (typeof window !== "undefined") {
       const savedTasks = localStorage.getItem("tasks");
-      if (savedTasks) {
+      if (typeof savedTasks === "string") {
         return JSON.parse(savedTasks);
       }
     } else {
@@ -62,12 +62,21 @@ export default function Tasks() {
     setTasks(newTasks);
   };
 
+  if (typeof tasks !== "undefined") {
   /* Done count */
   const doneCount = tasks.filter((task) => task.done).length;
   /* Total tasks */
   const totalTasks = tasks.length;
   /* Remaining tasks */
   const remainingTasks = totalTasks - doneCount;
+  /* Percentage of tasks done */
+  const percentageOfDone = (doneCount / totalTasks) * 100;
+  } else {
+    const doneCount = 0;
+    const totalTasks = 0;
+    const remainingTasks = 0;
+    const percentageOfDone = 0;
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
@@ -75,7 +84,7 @@ export default function Tasks() {
         <div>
           <div className="stat">
             <div className="stat-value" data-testid="label-percentage-of-done">
-              {((doneCount / totalTasks) * 100).toFixed(0)}%
+              { percentageOfDone }%
             </div>
             <div className="stat-title">Tasks done</div>
             <div
