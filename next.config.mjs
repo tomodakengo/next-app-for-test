@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
+const SUB_DIRECTORY = "/next-app-for-test";
+const isProd = process.env.NODE_ENV == "production"
+
 const nextConfig = {
   output: "export",
-  assetPrefix: process.env.NODE_ENV === "production" ? "/next-app-for-test" : ""
+  assetPrefix: isProd === "production" ? SUB_DIRECTORY : "",
+  publicRuntimeConfig: {
+    basePath: isProd ? SUB_DIRECTORY : "",
+  }
 };
 
 export default nextConfig;
