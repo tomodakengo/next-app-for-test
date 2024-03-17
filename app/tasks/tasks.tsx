@@ -9,15 +9,14 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     if (typeof window !== "undefined") {
       const savedTasks = localStorage.getItem("tasks");
-      if (typeof savedTasks === "string") {
+      if (savedTasks !== null) {
         return JSON.parse(savedTasks);
       }
-    } else {
-      return [
-        { text: "Run the tests", done: true },
-        { text: "Deploy the app", done: false },
-      ];
     }
+    return [
+      { text: "Run the tests", done: true },
+      { text: "Deploy the app", done: false },
+    ];
   });
   const [newTask, setNewTask] = useState("");
 
@@ -62,20 +61,24 @@ export default function Tasks() {
     setTasks(newTasks);
   };
 
+  let doneCount;
+  let totalTasks;
+  let remainingTasks;
+  let percentageOfDone;
   if (typeof tasks !== "undefined") {
-  /* Done count */
-  const doneCount = tasks.filter((task) => task.done).length;
-  /* Total tasks */
-  const totalTasks = tasks.length;
-  /* Remaining tasks */
-  const remainingTasks = totalTasks - doneCount;
-  /* Percentage of tasks done */
-  const percentageOfDone = (doneCount / totalTasks) * 100;
+    /* Done count */
+    doneCount = tasks.filter((task) => task.done).length;
+    /* Total tasks */
+    totalTasks = tasks.length;
+    /* Remaining tasks */
+    remainingTasks = totalTasks - doneCount;
+    /* Percentage of tasks done */
+    percentageOfDone = (doneCount / totalTasks) * 100;
   } else {
-    const doneCount = 0;
-    const totalTasks = 0;
-    const remainingTasks = 0;
-    const percentageOfDone = 0;
+    doneCount = 0;
+    totalTasks = 0;
+    remainingTasks = 0;
+    percentageOfDone = 0;
   }
 
   return (
@@ -84,7 +87,7 @@ export default function Tasks() {
         <div>
           <div className="stat">
             <div className="stat-value" data-testid="label-percentage-of-done">
-              { percentageOfDone }%
+              {percentageOfDone}%
             </div>
             <div className="stat-title">Tasks done</div>
             <div
