@@ -10,15 +10,14 @@ function Chat() {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== "undefined") {
       const savedMessages = localStorage.getItem("messages");
-      if (savedMessages) {
+      if (savedMessages !== null) {
         return JSON.parse(savedMessages);
       }
-    } else {
-      return [
-        { text: "Hello!", sender: "user" },
-        { text: "Hi there!", sender: "other" },
-      ];
     }
+    return [
+      { text: "Hello!", sender: "user" },
+      { text: "Hi there!", sender: "other" },
+    ];
   });
   const [newMessage, setNewMessage] = useState("");
 
