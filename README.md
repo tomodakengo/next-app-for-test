@@ -2,6 +2,8 @@
 
 This is a sample site for testing a single page application.
 
+When we merge to main, it will be build and deploy to https://tomodakengo.github.io/next-app-for-test/ .
+
 # Technology Stacks
 
 ## Framework
