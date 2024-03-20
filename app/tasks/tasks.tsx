@@ -1,85 +1,72 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Task {
   text: string;
   done: boolean;
 }
 
-export default function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedTasks = localStorage.getItem("tasks");
-      if (savedTasks !== null) {
-        return JSON.parse(savedTasks);
-      }
-    }
-    return [
-      { text: "Run the tests", done: true },
-      { text: "Deploy the app", done: false },
-    ];
-  });
-  const [newTask, setNewTask] = useState("");
+function useTasks(initialTasks: Task[]) {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [newTask, setNewTask] = useState<string>("");
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]); // Run whenever tasks change
+  }, [tasks]);
+
+  const addTask = (newTask: Task) => {
+    setTasks([...tasks, newTask]);
+  };
+
+  const removeTask = (index: number) => {
+    setTasks(tasks.filter((_, i) => i !== index));
+  };
+
+  const editTask = (index: number, updatedTask: Task) => {
+    setTasks(tasks.map((task, i) => (i === index ? updatedTask : task)));
+  };
+
+  const markDone = (index: number) => {
+    setTasks(
+      tasks.map((task, i) => (i === index ? { ...task, done: true } : task)),
+    );
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTask(e.target.value);
   };
 
-  /* Add a new task. */
-  const addTask = () => {
-    if (newTask.trim() !== "") {
-      setTasks([...tasks, { text: newTask, done: false }]);
-      setNewTask("");
-    }
+  return {
+    tasks,
+    addTask,
+    removeTask,
+    editTask,
+    markDone,
+    newTask,
+    handleInputChange,
   };
+}
 
-  /* Remove a task. */
-  const removeTask = (index: number) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
-    setTasks(newTasks);
-  };
+export default function Tasks() {
+  const initialTasks: Task[] = [
+    { text: "Run the tests", done: true },
+    { text: "Deploy the app", done: false },
+  ];
 
-  /* Edit a task. */
-  const editTask = (index: number) => {
-    const newTasks = [...tasks];
-    const updatedText = prompt("Edit task", newTasks[index].text);
-    if (updatedText !== null) {
-      newTasks[index].text = updatedText;
-      newTasks[index].done = false;
-      setTasks(newTasks);
-    }
-  };
+  const {
+    tasks,
+    addTask,
+    removeTask,
+    editTask,
+    markDone,
+    newTask,
+    handleInputChange,
+  } = useTasks(initialTasks);
 
-  /* Mark a task as done. */
-  const markDone = (index: number) => {
-    const newTasks = [...tasks];
-    newTasks[index].done = true;
-    setTasks(newTasks);
-  };
-
-  let doneCount;
-  let totalTasks;
-  let remainingTasks;
-  let percentageOfDone;
-  if (typeof tasks !== "undefined") {
-    /* Done count */
-    doneCount = tasks.filter((task) => task.done).length;
-    /* Total tasks */
-    totalTasks = tasks.length;
-    /* Remaining tasks */
-    remainingTasks = totalTasks - doneCount;
-    /* Percentage of tasks done */
-    percentageOfDone = (doneCount / totalTasks) * 100;
-  } else {
-    doneCount = 0;
-    totalTasks = 0;
-    remainingTasks = 0;
-    percentageOfDone = 0;
-  }
+  const percentageOfDone = tasks.length
+    ? ((tasks.filter((task) => task.done).length / tasks.length) * 100).toFixed(
+        0,
+      )
+    : "0";
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
@@ -87,14 +74,14 @@ export default function Tasks() {
         <div>
           <div className="stat">
             <div className="stat-value" data-testid="label-percentage-of-done">
-              {percentageOfDone}%
+              {isNaN(parseFloat(percentageOfDone)) ? "0" : percentageOfDone}%
             </div>
             <div className="stat-title">Tasks done</div>
             <div
               className="stat-desc text-secondary"
               data-testid="label-tasks-remaining"
             >
-              {remainingTasks} tasks remaining
+              {tasks.filter((task) => !task.done).length} tasks remaining
             </div>
           </div>
         </div>
@@ -112,7 +99,7 @@ export default function Tasks() {
             />
             <button
               className="btn btn-primary join-item"
-              onClick={addTask}
+              onClick={() => addTask({ text: newTask, done: false })}
               data-testid="button-add-new-task"
             >
               Add
@@ -151,7 +138,13 @@ export default function Tasks() {
                 </button>
                 <button
                   className="btn btn-sm mr-1"
-                  onClick={() => editTask(index)}
+                  onClick={() =>
+                    editTask(index, {
+                      ...task,
+                      text: prompt("Edit task", task.text) || task.text,
+                      done: false,
+                    })
+                  }
                   data-testid="button-edit-of-task"
                 >
                   Edit

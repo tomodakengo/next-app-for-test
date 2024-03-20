@@ -23,31 +23,26 @@ function Chat() {
 
   useEffect(() => {
     localStorage.setItem("messages", JSON.stringify(messages));
-  }, [messages]); // Run whenever tasks change
+  }, [messages]); // Run whenever messages change
 
-  const handleInputChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);
   };
 
   const sendMessage = async () => {
-    if (newMessage.trim() !== "") {
-      // Send from user
-      setMessages([...messages, { text: newMessage, sender: "user" }]);
+    if (newMessage.trim() === "") return;
+
+    try {
+      const userMessage: Message = { text: newMessage, sender: "user" };
+      setMessages([...messages, userMessage]);
       setNewMessage("");
 
-      // Get message from api
-      try {
-        const response = await axios.get("https://api.adviceslip.com/advice");
-        const advice = response.data.slip.advice;
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: advice, sender: "other" },
-        ]);
-      } catch (error) {
-        console.error("Error fetching advice:", error);
-      }
+      const response = await axios.get("https://api.adviceslip.com/advice");
+      const advice = response.data.slip.advice;
+      const otherMessage: Message = { text: advice, sender: "other" };
+      setMessages((prevMessages) => [...prevMessages, otherMessage]);
+    } catch (error) {
+      console.error("Error sending or fetching messages:", error);
     }
   };
 
@@ -64,10 +59,8 @@ function Chat() {
         <div className="p-4">
           {messages.map((message, index) => (
             <div
-              key={index}
-              className={`chat ${
-                message.sender === "user" ? "chat-end" : "chat-start"
-              }`}
+              key={`${message.text}-${index}`} // Use a stable identifier
+              className={`chat ${message.sender === "user" ? "chat-end" : "chat-start"}`}
             >
               <div
                 className="chat-bubble"
